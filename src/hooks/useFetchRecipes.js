@@ -29,6 +29,7 @@ export function useFetchRecipes(url) {
     }
 
     const abortController = new AbortController();
+    let cancelled = false;
     setIsLoading(true);
     setError(null);
 
@@ -39,13 +40,17 @@ export function useFetchRecipes(url) {
           throw new Error(`Failed to fetch recipes (Status: ${response.status})`);
         }
         const result = await response.json();
-        apiCache.set(url, result);
-        setData(result);
-        setIsLoading(false);
-      } catch (err) {
-        if (err.name !== 'AbortError') {
-          setError(err.message || 'An unexpected network error occurred');
+        if (!cancelled) {
+          apiCache.set(url, result);
+          setData(result);
           setIsLoading(false);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setIsLoading(false);
+          if (err.name !== 'AbortError') {
+            setError(err.message || 'An unexpected network error occurred');
+          }
         }
       }
     }
@@ -53,6 +58,7 @@ export function useFetchRecipes(url) {
     fetchData();
 
     return () => {
+      cancelled = true;
       abortController.abort();
     };
   }, [url]);

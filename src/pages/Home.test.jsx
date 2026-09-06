@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Home from './Home';
 
 // Mock useNavigate from react-router-dom
@@ -15,6 +15,9 @@ vi.mock('react-router-dom', async () => {
 });
 
 describe('Home View Component', () => {
+  beforeEach(() => {
+    mockNavigate.mockClear();
+  });
   it('renders hero title and controlled search bar input', () => {
     render(
       <BrowserRouter>

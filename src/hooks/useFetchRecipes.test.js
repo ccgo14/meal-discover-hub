@@ -92,10 +92,47 @@ describe('useFetchRecipes hook', () => {
       useFetchRecipes('https://www.themealdb.com/api/json/v1/1/search.php?s=Aborted')
     );
 
-    // Wait a brief tick
-    await new Promise((resolve) => setTimeout(resolve, 50));
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
 
     // Abort errors should not set error state
+    expect(result.current.error).toBeNull();
+  });
+
+  it('should handle empty search results (null meals returned from API)', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ meals: null }),
+    });
+
+    const { result } = renderHook(() =>
+      useFetchRecipes('https://www.themealdb.com/api/json/v1/1/search.php?s=NonExistentFood')
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.data).toEqual({ meals: null });
+    expect(result.current.error).toBeNull();
+  });
+
+  it('should handle invalid meal ID lookup (null meals from API)', async () => {
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      json: async () => ({ meals: null }),
+    });
+
+    const { result } = renderHook(() =>
+      useFetchRecipes('https://www.themealdb.com/api/json/v1/1/lookup.php?i=invalidid')
+    );
+
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+
+    expect(result.current.data).toEqual({ meals: null });
     expect(result.current.error).toBeNull();
   });
 

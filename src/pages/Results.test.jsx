@@ -1,10 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Routes, Route } from 'react-router-dom';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import Results from './Results';
 import * as fetchHookModule from '../hooks/useFetchRecipes';
 
 describe('Results View Component', () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
   it('renders loading skeleton when fetching recipes', () => {
     vi.spyOn(fetchHookModule, 'default').mockReturnValue({
       data: null,
