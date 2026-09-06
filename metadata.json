@@ -1,6 +1,0 @@
-{
-  "name": "Recipe Discovery Application",
-  "description": "A modern React recipe discovery web application built with TheMealDB API, React Router, Tailwind CSS, and Vitest.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
